@@ -1,80 +1,56 @@
-
+import { Link } from "react-router-dom";
+import ThemeToggle from "./ThemeToggle";
 
 const Navbar = () => {
-    const loggedIn = true;
+  const loggedIn = false; 
+
   return (
-    <div className="navbar bg-amber-50 shadow-md sticky top-0 z-50">
-
-      <div className="flex-1">
-        <a className="text-black text-lg lg:text-2xl ">
-          FastAPI Blog
-        </a>
-      </div>
-
-
-      <div className="flex gap-4">
-      
-        <div className="hidden lg:flex gap-4">
-
-            <button className="btn bg-amber-100 text-black hover:bg-amber-50">
-              {!loggedIn ? "Login" : "New Blog"}
-            </button>
-
-            <button className="btn bg-amber-100 text-black hover:bg-amber-50">
-              {!loggedIn ? "Register" : "Logout"}
-            </button>
-
-        </div>
-
-
-        <div className="dropdown dropdown-end ml-2">
-
-          <div
-            tabIndex={0}
-            role="button"
-            className="btn btn-ghost btn-circle avatar"
+    <header className="bg-[#5f788a] text-white shadow-sm sticky top-0 z-50">
+      <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
+    
+        <div className="flex items-center gap-6">
+          <Link
+            to="/"
+            className="text-xl font-medium tracking-tight text-white hover:opacity-90 transition-opacity"
           >
-              <div className="w-8 lg:w-10 rounded-full">
-              <img
-                alt="User avatar"
-                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-              />
-
-          </div>
+            FastAPI Blog
+          </Link>
+          <Link
+            to="/"
+            className="text-white/80 hover:text-white text-sm transition-colors"
+          >
+            Home
+          </Link>
         </div>
 
-        <ul
-          tabIndex={-1}
-          className="text-black menu menu-sm dropdown-content bg-amber-100 z-1 mt-3 w-52 p-2 shadow"
-        >
+      
+        <div className="flex items-center gap-3">
+          {!loggedIn ? (
+            <>
+              <button className="px-3 py-1 text-sm text-white border border-white/40 hover:border-white hover:bg-white/10 rounded transition-all">
+                Login
+              </button>
+              <button className="px-3 py-1 text-sm bg-white text-gray-800 hover:bg-gray-100 font-medium rounded shadow-xs transition-all">
+                Register
+              </button>
+            </>
+          ) : (
+            <>
+              <button className="px-3 py-1 text-sm text-white border border-white/40 hover:border-white hover:bg-white/10 rounded transition-all">
+                New Blog
+              </button>
+              <button className="px-3 py-1 text-sm bg-white text-gray-800 hover:bg-gray-100 font-medium rounded shadow-xs transition-all">
+                Logout
+              </button>
+            </>
+          )}
 
-          {/* Mobile options */}
-          <li className="lg:hidden">
-            <a>
-              {!loggedIn ? "Login" : "New Blog"}
-            </a>
-          </li>
-
-          <li className="lg:hidden">
-            <a>
-              {!loggedIn ? "Register" : "Logout"}
-            </a>
-          </li>
-
-          {/* Profile options */}
-          <li>
-            <a>Profile</a>
-          </li>
-
-          <li>
-            <a>Settings</a>
-          </li>
-
-        </ul>
-
+          <div className="border-l border-white/20 pl-2 ml-1">
+            <ThemeToggle />
           </div>
         </div>
-    </div>
+      </div>
+    </header>
   );
 };
 
