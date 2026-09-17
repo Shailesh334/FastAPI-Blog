@@ -1,37 +1,39 @@
 
+from .models import BlogRequest , BlogResponse
+
+from fastapi import status
+from fastapi import HTTPException
 from fastapi import FastAPI
+from .data import blogs
+
 
 app =  FastAPI()
 
-data = [
-  {
-    "id": 1,
-    "author": "Shailesh",
-    "content": "FastAPI is a modern Python framework for building fast and reliable APIs."
-  },
-  {
-    "id": 2,
-    "author": "Rahul",
-    "content": "React makes it easy to build reusable and interactive user interfaces."
-  },
-  {
-    "id": 3,
-    "author": "Priya",
-    "content": "Learning backend development becomes easier when you build projects alongside tutorials."
-  },
-  {
-    "id": 4,
-    "author": "Amit",
-    "content": "Python is a great language for beginners because of its simple and readable syntax."
-  },
-  {
-    "id": 5,
-    "author": "Neha",
-    "content": "APIs allow different applications to communicate with each other."
-  }
-]
-
 
 @app.get("/")
+@app.get("/api/blogs" , response_model=list[BlogResponse])
 def home():
-    return data
+    return blogs
+
+
+@app.get("/api/blogs/{id}" , response_model=BlogResponse)
+def get_blog(id : int ):
+    for blog in blogs:
+        if blog['id'] == id:
+            return blog
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Blog not found")
+
+@app.post("/api/blogs" , response_model=BlogResponse)
+def create_blog(blog : BlogRequest):
+    max_id = max((b["id"] for b in blogs), default=0)
+
+    new_blog = {
+        "id" : max_id + 1,
+        "title" : blog.title,
+        "author" : blog.author,
+        "content" : blog.content,
+        "date_posted" : "April-20-2025"
+    }
+
+    blogs.append(new_blog)
+    return new_blog
