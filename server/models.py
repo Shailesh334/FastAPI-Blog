@@ -14,7 +14,6 @@ class BlogBase(BaseModel):
     
 class BlogResponse(BlogBase):
     model_config = ConfigDict(from_attributes=True)
-
     pass
 
 class BlogRequest(BaseModel):

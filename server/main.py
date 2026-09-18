@@ -1,10 +1,10 @@
 
-from .models import BlogRequest , BlogResponse
+from models import BlogRequest , BlogResponse
 
 from fastapi import status
 from fastapi import HTTPException
 from fastapi import FastAPI
-from .data import blogs
+from data import blogs
 
 
 app =  FastAPI()

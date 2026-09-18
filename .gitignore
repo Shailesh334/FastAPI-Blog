@@ -1,0 +1,24 @@
+# Notes and cheatsheets
+UI_LAYOUT_CHEATSHEET.md
+
+# Python / FastAPI
+__pycache__/
+*.py[cod]
+*$py.class
+*.env
+.env
+.venv/
+venv/
+ENV/
+
+# Node / React
+client/node_modules/
+client/dist/
+client/dist-ssr/
+*.local
+
+# Editor & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

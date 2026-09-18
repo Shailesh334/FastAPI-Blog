@@ -5,10 +5,10 @@ import Footer from "./components/Footer";
 
 const App = () => {
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-[#18191a] text-gray-900 dark:text-gray-100 flex flex-col justify-between antialiased transition-colors duration-200">
+    <div className="min-h-screen bg-gray-100 dark:bg-[#18191a] text-gray-900 dark:text-gray-100 flex flex-col justify-between antialiased  transition-colors duration-200">
       <Router>
         <Navbar />
-        <main className="flex-grow">
+        <main className="">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="*" element={<Navigate to="/" />} />
