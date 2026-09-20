@@ -1,9 +1,7 @@
 
-from models import BlogRequest , BlogResponse
 
-from fastapi import status
-from fastapi import HTTPException
-from fastapi import FastAPI
+from fastapi import FastAPI , HTTPException , status
+from schemas import BlogRequest , BlogResponse
 from data import blogs
 
 

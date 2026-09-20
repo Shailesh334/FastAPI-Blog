@@ -728,7 +728,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "fastapi", extras = ["standar", "standard"] },
+    { name = "fastapi", extras = ["standard"] },
     { name = "pydantic" },
     { name = "uvicorn" },
 ]
