@@ -1,10 +1,7 @@
 
 from datetime import UTC , datetime 
-from time import timezone
-from typing import Text
-from sqlalchemy import String , DateTime
-from sqlalchemy import Integer
-from sqlalchemy.orm import DeclarativeBase , Mapped , mapped_column , relationship , ForeignKey
+from sqlalchemy import String , DateTime , Text , Integer , ForeignKey
+from sqlalchemy.orm import DeclarativeBase , Mapped , mapped_column , relationship 
 
 
 class Base(DeclarativeBase):
@@ -17,7 +14,7 @@ class User(Base):
     id : Mapped[int] = mapped_column(Integer , primary_key=True , index=True , autoincrement=True)
     username : Mapped[str] = mapped_column(String(50), unique=True , nullable=False )
     email : Mapped[str] = mapped_column( String(120),unique=True , nullable=False)
-    image_file : Mapped[str | None] = mapped_column( String(255) , nullable=True , default= "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" )
+    image_file : Mapped[str | None] = mapped_column( String(255) , nullable=True , default= None )
     
     blogs : Mapped[list["Blog"]] =  relationship(back_populates="author")
 

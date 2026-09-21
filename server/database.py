@@ -13,7 +13,7 @@ engine =  create_engine(
 )
 
 # 2. Create sessionLocal
-SessionLocal = sessionmaker(autocommit= False , autoFlush=False , bind= engine)
+SessionLocal = sessionmaker(autocommit= False , autoflush=False , bind= engine)
 
 # 3. Get DB
 def get_db():
