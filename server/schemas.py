@@ -12,6 +12,11 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
     pass
 
+class UserUpdate(BaseModel):
+    username : str | None = Field(default=None , min_length=4 , max_length=20)
+    email : EmailStr | None = Field(default=None , max_length= 20)
+    image_file : str | None = Field(default=None)
+    
 class UserResponse(UserBase):
     model_config = ConfigDict(from_attributes=True)
 
@@ -21,14 +26,19 @@ class UserResponse(UserBase):
 
 
 
-
 class BlogBase(BaseModel):
     title : str = Field(min_length=1 , max_length=100)
     content : str = Field(min_length=1 , max_length=1000)
   
 class BlogCreate(BlogBase):
     author_id : int
+
+
+class BlogUpdate(BaseModel):
+    title : str | None= Field( default=None , min_length=1 , max_length=100)
+    content : str | None= Field( default=None , min_length=1 , max_length=1000)
     
+
 class BlogResponse(BlogBase):
     model_config = ConfigDict(from_attributes=True)
 

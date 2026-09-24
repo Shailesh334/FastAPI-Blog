@@ -9,7 +9,7 @@ from fastapi import FastAPI , HTTPException , status , Depends
 
 
 import models
-from schemas import BlogCreate , BlogResponse , UserCreate , UserResponse
+from schemas import BlogCreate , BlogResponse , UserCreate , UserResponse , BlogUpdate , UserUpdate
 from database import  engine , get_db
 
 Base.metadata.create_all(bind=engine)
@@ -60,6 +60,63 @@ def get_user(id : int , db:Annotated[Session , Depends(get_db)]):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
     return user
 
+# Update a user fully
+@app.put("/api/users/{user_id}" , response_model=UserResponse , status_code= status.HTTP_200_OK)
+def update_user_fully(user_id : int , user : UserCreate , db : Annotated[Session , Depends(get_db)]):
+    result = db.execute(select(models.User).where(models.User.id == user_id))
+    existing_user = result.scalars().first()
+    if not existing_user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    
+    existing_user.username = user.username
+    existing_user.email = user.email
+    
+    db.commit()
+    db.refresh(existing_user)
+
+    return existing_user
+
+# Update a user partially
+@app.patch("/api/users/{user_id}" , response_model=UserResponse , status_code=status.HTTP_200_OK)
+def update_user_partially(user_id : int , user : UserUpdate , db : Annotated[Session , Depends(get_db)]):
+    result = db.execute(select(models.User).where(models.User.id == user_id))
+    existing_user = result.scalars().first()
+    if not existing_user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    
+    user_data = user.model_dump(exclude_unset=True)
+
+    if "username" in user_data:
+        already_username = db.execute(select(models.User).where(models.User.username == user_data["username"])).scalars().first()
+        if already_username:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST , detail= "Username already exists")
+    
+    if "email" in user_data:
+        already_email = db.execute(select(models.User).where(models.User.email == user.email)).scalars().first()
+        if already_email:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST , detail= "Email already exists")
+
+
+   
+
+    for key , value in user_data.items():
+        setattr(existing_user, key , value)
+    
+    db.commit()
+    db.refresh(existing_user)
+    return existing_user 
+
+# Delete a user
+@app.delete("/api/users/{user_id}" , status_code=status.HTTP_204_NO_CONTENT)
+def delete_user(user_id : int , db : Annotated[Session , Depends(get_db)]):
+    result = db.execute(select(models.User).where(models.User.id == user_id))
+    existing_user = result.scalars().first()
+    if not existing_user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    
+    db.delete(existing_user)
+    db.commit()
+    return 
 
 # Create new blog
 @app.post("/api/blogs" , response_model=BlogResponse , status_code=status.HTTP_201_CREATED)
@@ -100,6 +157,55 @@ def get_blog(id : int , db : Annotated[Session , Depends(get_db)]):
     return blog
 
 
+# Update a blog fully (put)
+@app.put("/api/blogs/{post_id}" , response_model=BlogResponse , status_code=status.HTTP_200_OK)
+def updtae_blog_full(post_id : int , post : BlogCreate , db : Annotated[Session , Depends(get_db)]):
+    result = db.execute(select(models.Blog).where(models.Blog.id == post_id))
+    blog = result.scalars().first()
+
+    if not blog:
+        raise HTTPException(status_code = status.HTTP_404_NOT_FOUND , detail = "Blog not found")
+    
+    blog.title = post.title
+    blog.content = post.content
+    blog.id = post_id
+    blog.author_id = post.author_id
+
+    db.commit()
+    db.refresh(blog)
+    return blog
+
+
+# Update a blog partially
+@app.patch("/api/blogs/{post_id}" , response_model=BlogResponse , status_code=status.HTTP_200_OK)
+def update_blog_partially(post_id : int , post : BlogUpdate , db : Annotated[Session , Depends(get_db)]):
+    result = db.execute(select(models.Blog).where(models.Blog.id == post_id))
+    blog = result.scalars().first()
+    if not blog:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Blog not found")
+
+    blog_data = post.model_dump(exclude_unset=True)
+    for key , value in blog_data.items():
+        setattr(blog , key , value)
+
+    db.commit()
+    db.refresh(blog)
+    return blog
+
+# Delete a blog
+@app.delete("/api/blogs/{post_id}" , status_code=status.HTTP_204_NO_CONTENT)
+def delete_blog(post_id : int , db : Annotated[Session , Depends(get_db)]):
+    result = db.execute(select(models.Blog).where(models.Blog.id == post_id))
+    blog = result.scalars().first()
+
+    if not blog:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Blog not found")
+
+    db.delete(blog)
+    db.commit()
+   
+
+    return {"message" : "Blog deleted successfully"}
 
 # Get blogs of specific user
 @app.get("/api/users/{id}/posts" , response_model=list[BlogResponse])
